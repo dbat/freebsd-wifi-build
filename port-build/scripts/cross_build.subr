@@ -181,3 +181,41 @@ port_package()
 	cd "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/staging/"
 	tar zcpvf "${X_PACKAGE_PKGDIR}/${X_PORTBUILD_PORT}.tar.gz" "@${X_PORTBUILD_DIR}/pkgs/${X_PORTBUILD_PORT}/pkg-contents"
 }
+
+istrue()
+{
+	[ -n "$1" ] || return
+	case "$1" in
+		0|[Nn]|[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]) return 1;;
+		1|[Yy]|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][NnKK]) return 0;;
+		*) return 2;; # undefined falls to false
+	esac
+}
+
+isfalse() { ! istrue $@; }
+
+get_cross_compile()
+{
+	local arch="$1"
+	[ -n "$1" ] || arch=mips
+	#
+	# dynamically construct cross compiler, default to mips
+	# if find more than one, get the last one
+	# (suppose to be the fullset iden: host-os-bin)
+	#
+	local x
+	for x in /usr/local/bin/${arch}-*-gcc; do :; done
+	#
+	if [ -x "$x" ]; then
+		# cut the directory part, and chop the tail
+		x="${x##*/}"
+		#echo -n "${x%-gcc}"
+		printf "${x%-gcc}"
+	#
+	# actually this kind of env *should* included the
+	# trailing hyphen - (see https://busybox.net/FAQ.html#configure)
+	# for this time we leave it the same behaviour as the previous one
+	#
+	else return 1; #echo "ERROR_NOTFOUND"
+	fi
+}
