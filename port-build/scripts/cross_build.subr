@@ -24,15 +24,45 @@ port_incrules()
 port_checksum()
 {
 	local X_PKGFILE="`basename ${PKGDISTFILE}`"
+	local X_SIZE
 	local X_CKSUM
+	local X_CHECK=0
 
-	X_CKSUM="`sha512 -q ${X_PACKAGE_DISTFILE_DIR}/${X_PKGFILE} || true`"
+	if [ -n "${PKGDISTFILE_SIZE}" ]; then
+		X_CHECK="$((X_CHECK + 1))"
+		X_SIZE="`stat -f%z ${X_PACKAGE_DISTFILE_DIR}/${X_PKGFILE} || true`"
 
-	if [ "${X_CKSUM}" != "${PKGDISTFILE_SUM_SHA512}" ]; then
-		echo "ERROR: checksum on ${X_PKGFILE} is incorrect."
-		return 1
+		if [ "${X_SIZE}" != "${PKGDISTFILE_SIZE}" ]; then
+			echo "ERROR: ${X_PKGFILE} size is: ${X_SIZE}, expected to be: ${PKGDISTFILE_SIZE}"
+			return 1
+		fi
 	fi
-	echo "NOTICE: checksum on ${X_PKGFILE} is correct."
+
+	if [ -n "${PKGDISTFILE_SUM_SHA256}" ]; then
+		X_CHECK="$((X_CHECK + 2))"
+		X_CKSUM="`sha256 -q ${X_PACKAGE_DISTFILE_DIR}/${X_PKGFILE} || true`"
+
+		if [ "${X_CKSUM}" != "${PKGDISTFILE_SUM_SHA256}" ]; then
+			echo "ERROR: checksum on ${X_PKGFILE} is incorrect."
+			return 1
+		fi
+	fi
+ 
+	if [ -n "${PKGDISTFILE_SUM_SHA512}" ]; then
+		X_CHECK="$((X_CHECK + 4))"
+ 		X_CKSUM="`sha512 -q ${X_PACKAGE_DISTFILE_DIR}/${X_PKGFILE} || true`"
+
+		if [ "${X_CKSUM}" != "${PKGDISTFILE_SUM_SHA512}" ]; then
+			echo "ERROR: checksum on ${X_PKGFILE} is incorrect."
+			return 1
+		fi
+	fi 
+	
+	if test "${X_CHECK}" -lt 1; then
+		echo "WARNING: Ne check scheme has applied"
+	else 
+		echo "NOTICE: checksum on ${X_PKGFILE} is correct."
+	fi
 	return 0
 }
 
