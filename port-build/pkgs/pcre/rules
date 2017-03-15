@@ -1,0 +1,40 @@
+PKGNAME=pcre
+PKGVERSION=8.40
+PKGREVISION=1
+PKGDISTFILE=ftp://ftp.tin.org/pub/libs/pcre/pcre/pcre-8.40.tar.bz2
+PKGDISTFILE_SUM_SHA256=00e27a29ead4267e3de8111fcaa59b132d0533cdfdbdddf4b0604279acbcf4f4
+PKGWORKSUBDIR=pcre-8.40
+USE_CONFIGURE=YES
+PKG_MAKE_CONFIGURE_FLAGS="--disable-cpp --disable-jit"
+PKG_MAKE_CONFIGURE_FLAGS="--disable-jit"
+PKG_MAKE_BUILD_FLAGS=""
+
+# missing <string>, (I forgot why)
+#
+# but apparently, we can't set it here, not used
+# X_PKG_INCS="${X_PKG_INCS} -I${X_ROOTDIR}/usr/include/c++/v1"
+#
+# it's not work here either
+# X_PKG_CFLAGS="${X_PKG_CFLAGS} -I${X_ROOTDIR}/usr/include/c++/v1"
+#
+# X_PKG_CFLAGS="${X_PKG_CFLAGS} -I${X_ROOTDIR}/usr/include/c++/v1"
+# X_PKG_CPPFLAGS="${X_PKG_CPPFLAGS} -I${X_ROOTDIR}/usr/include/c++/v1"
+
+# i don't know how to include c++/v1 in this system
+# OK then just disable cpp,
+#	--disable-cpp \
+# or you can make symlink to c++/v1 on recognized envar
+# (so i add $HOME/local/include to X_PKG_INCS)
+
+# Last resort - dump in CC instead, it should work
+X_PKG_CPPFLAGS="${X_PKG_CPPFLAGS} -I${X_ROOTDIR}/usr/include/c++/v1"
+X_PKG_CC="${X_PKG_CC} -I${X_ROOTDIR}/usr/include/c++/v1"
+
+# maybe it's on --oldincludedir?
+PKG_MAKE_CONFIGURE_FLAGS="\
+	--disable-jit \
+"
+
+# PKG_MAKE_BUILD_FLAGS="\
+# 	-I${X_ROOTDIR}/usr/include/c++/v1 \
+# " 
