@@ -20,7 +20,7 @@ fi
 
 # calculate basedir
 # XXX this should be generated in cfg.pm!
-X_BASEDIR=${SCRIPT_DIR}/../
+X_BASEDIR=${SCRIPT_DIR%/?*}
 
 # Configure INSTALL; to use the FreeBSD install program from -10
 # and -head that knows about mtree updates and non-root installs.
@@ -131,11 +131,14 @@ ${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/cat ${X_STAGING_FSROOT}/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/kenv ${X_STAGING_FSROOT}/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/dd ${X_STAGING_FSROOT}/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/ps ${X_STAGING_FSROOT}/bin/
+${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/pkill ${X_STAGING_FSROOT}/bin/
+${INSTALL_DEF_LINK} /bin/pkill ${X_STAGING_FSROOT}/bin/pgrep
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/expr ${X_STAGING_FSROOT}/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/sleep ${X_STAGING_FSROOT}/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/hostname ${X_STAGING_FSROOT}/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/mkdir ${X_STAGING_FSROOT}/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/chmod ${X_STAGING_FSROOT}/bin/
+${INSTALL_DEF_BIN} ${X_DESTDIR}/bin/chflags ${X_STAGING_FSROOT}/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/hexdump ${X_STAGING_FSROOT}/usr/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/touch ${X_STAGING_FSROOT}/usr/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/more ${X_STAGING_FSROOT}/usr/bin/
@@ -150,6 +153,10 @@ ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/reset ${X_STAGING_FSROOT}/usr/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/tput ${X_STAGING_FSROOT}/usr/bin/
 ${INSTALL_SUID_BIN} ${X_DESTDIR}/usr/bin/passwd ${X_STAGING_FSROOT}/usr/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/sbin/chown ${X_STAGING_FSROOT}/usr/sbin/
+
+# bsd's sed is cheap (less than half of grep size), yet stable and powerful
+${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/sed ${X_STAGING_FSROOT}/usr/bin/
+${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/tr ${X_STAGING_FSROOT}/usr/bin/
 
 # cron
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/sbin/cron ${X_STAGING_FSROOT}/usr/sbin/
@@ -178,6 +185,11 @@ ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/libexec/getty ${X_STAGING_FSROOT}/usr/libexe
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/vmstat ${X_STAGING_FSROOT}/usr/bin/
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/systat ${X_STAGING_FSROOT}/usr/bin/
 ${INSTALL_DEF_LIB} ${X_DESTDIR}/lib/libdevstat.so.7 ${X_STAGING_FSROOT}/lib/
+
+${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/stat ${X_STAGING_FSROOT}/usr/bin/
+${INSTALL_DEF_LINK} /usr/bin/stat ${X_STAGING_FSROOT}/usr/bin/readlink
+${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/bin/fstat ${X_STAGING_FSROOT}/usr/bin/
+${INSTALL_DEF_LINK} /usr/bin/fstat ${X_STAGING_FSROOT}/usr/bin/fuser
 
 # devinfo is useful
 ${INSTALL_DEF_BIN} ${X_DESTDIR}/usr/sbin/devinfo ${X_STAGING_FSROOT}/usr/sbin/
@@ -261,7 +273,7 @@ ${INSTALL_DEF_LIB} ${X_DESTDIR}/usr/lib/pam_securetty.so ${X_STAGING_FSROOT}/usr
 ${INSTALL_DEF_LIB} ${X_DESTDIR}/usr/lib/pam_self.so ${X_STAGING_FSROOT}/usr/lib
 ${INSTALL_DEF_LIB} ${X_DESTDIR}/usr/lib/pam_ssh.so ${X_STAGING_FSROOT}/usr/lib
 ${INSTALL_DEF_LIB} ${X_DESTDIR}/usr/lib/pam_unix.so ${X_STAGING_FSROOT}/usr/lib
-${INSTALL_DEF_LIB} ${X_DESTDIR}/usr/lib/libypclnt.so.4 ${X_STAGING_FSROOT}/usr/lib
+#NIS: ${INSTALL_DEF_LIB} ${X_DESTDIR}/usr/lib/libypclnt.so.4 ${X_STAGING_FSROOT}/usr/lib
 ${INSTALL_DEF_FILE} ${X_DESTDIR}/etc/nsswitch.conf ${X_STAGING_FSROOT}/c/etc/nsswitch.conf
 ${INSTALL_DEF_FILE} ${X_DESTDIR}/usr/share/misc/termcap ${X_STAGING_FSROOT}/usr/share/misc/
 ${INSTALL_DEF_FILE} ${X_DESTDIR}/usr/share/tabset/vt100 ${X_STAGING_FSROOT}/usr/share/tabset/
