@@ -219,3 +219,19 @@ get_cross_compile()
 	else return 1; #echo "ERROR_NOTFOUND"
 	fi
 }
+
+port_exec_scripts()
+{
+	for i; do
+	# read -p "PAUSED-2.. $i" x
+	# executed under subshell so any failures will not bring the function down
+	# the script expected to set their return status 0:success 1:fail/error
+	# the script will run in extracted port dir PKGWORKSUBDIR as stated in file: "rules"
+		printf " executing $i.. "
+		(
+		cd "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/work/${PKGWORKSUBDIR}"
+		. "${X_PORTBUILD_DIR}/pkgs/${X_PORTBUILD_PORT}/patches/${i%.sh}.sh"
+		) && echo done || echo error
+	done
+	# read -p "PAUSED-3.." x
+}
