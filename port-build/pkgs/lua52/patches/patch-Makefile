@@ -1,0 +1,50 @@
+--- Makefile.org	2017-03-09 13:52:25.132259000 +0000
++++ Makefile	2017-03-09 13:56:08.131856000 +0000
+@@ -10,13 +10,13 @@
+ # so take care if INSTALL_TOP is not an absolute path. See the local target.
+ # You may want to make INSTALL_LMOD and INSTALL_CMOD consistent with
+ # LUA_ROOT, LUA_LDIR, and LUA_CDIR in luaconf.h.
+-INSTALL_TOP= /usr/local
+-INSTALL_BIN= $(INSTALL_TOP)/bin
+-INSTALL_INC= $(INSTALL_TOP)/include
+-INSTALL_LIB= $(INSTALL_TOP)/lib
+-INSTALL_MAN= $(INSTALL_TOP)/man/man1
+-INSTALL_LMOD= $(INSTALL_TOP)/share/lua/$V
+-INSTALL_CMOD= $(INSTALL_TOP)/lib/lua/$V
++INSTALL_TOP?= $(DESTDIR)/usr/local
++INSTALL_BIN?= $(INSTALL_TOP)/bin
++INSTALL_INC?= $(INSTALL_TOP)/include
++INSTALL_LIB?= $(INSTALL_TOP)/lib
++INSTALL_MAN?= $(INSTALL_TOP)/man/man1
++INSTALL_LMOD?= $(INSTALL_TOP)/share/lua/$V
++INSTALL_CMOD?= $(INSTALL_TOP)/lib/lua/$V
+ 
+ # How to install. If your install program does not support "-p", then
+ # you may have to run ranlib on the installed liblua.a.
+@@ -39,10 +39,10 @@
+ PLATS= aix ansi bsd freebsd generic linux macosx mingw posix solaris
+ 
+ # What to install.
+-TO_BIN= lua luac
+-TO_INC= lua.h luaconf.h lualib.h lauxlib.h lua.hpp
+-TO_LIB= liblua.a
+-TO_MAN= lua.1 luac.1
++TO_BIN?= lua luac
++TO_INC?= lua.h luaconf.h lualib.h lauxlib.h lua.hpp
++TO_LIB?= liblua.a liblua.so
++TO_MAN?= lua.1 luac.1
+ 
+ # Lua version and release.
+ V= 5.2
+@@ -91,8 +91,8 @@
+ 	@echo "TO_INC= $(TO_INC)"
+ 	@echo "TO_LIB= $(TO_LIB)"
+ 	@echo "TO_MAN= $(TO_MAN)"
+-	@echo "INSTALL_TOP= $(INSTALL_TOP)"
+-	@echo "INSTALL_BIN= $(INSTALL_BIN)"
++	@ECHO "install_top= $(install_top)"
++	@ECHO "install_bin= $(install_bin)"
+ 	@echo "INSTALL_INC= $(INSTALL_INC)"
+ 	@echo "INSTALL_LIB= $(INSTALL_LIB)"
+ 	@echo "INSTALL_MAN= $(INSTALL_MAN)"
+  
