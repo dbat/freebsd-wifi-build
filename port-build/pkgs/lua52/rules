@@ -1,0 +1,73 @@
+PKGNAME=lua52
+PKGVERSION=5.2.4
+PKGREVISION=1
+PKGDISTFILE=https://www.lua.org/ftp/lua-5.2.4.tar.gz
+PKGDISTFILE_SUM_SHA256=b9e2e4aad6789b3b63a056d442f7b39f0ecfca3ae0f1fc0ae4e9614401b69f4b
+PKGWORKSUBDIR=lua-5.2.4
+PKG_LICENCE="BSD"
+
+PKG_MAKE_CONFIGURE_FLAGS="\
+        LIBEDIT_CFLAGS=-I${X_PACKAGE_BUILDROOT_DIR}/libedit/staging/usr/local/include \
+        LIBEDIT_LIBS=${X_PACKAGE_BUILDROOT_DIR}/libedit/staging/usr/local/lib/libedit.a\
+"
+PKG_MAKE_CONFIGURE_FLAGS=""
+
+# LDFLAGS+=       -lm -pthread
+# BUILD_WRKSRC=   ${WRKSRC}/src
+
+
+# MAKE_ARGS="\
+# 	MYCFLAGS=\"${CFLAGS} ${CPPFLAGS} -DLUA_USE_LINUX\" \
+# 	MYLDFLAGS=${LDFLAGS} \
+# 	MYLIBS=\"-Wl,-E -L${LOCALBASE}/lib -ledit\" \
+# 	CC=${CC} \
+# 	LUA_T=lua51 \
+# 	LUAC_T=luac51 \
+# 	LUA_A=liblua-${LUA_VER}.a \
+# 	LUA_SO=liblua-${LUA_VER}.so \
+# 	LUA_SONAME=liblua-${LUA_VER}.so \
+# 	TO_BIN=\"lua51 luac51\" \
+# 	TO_LIB=\"liblua-${LUA_VER}.a liblua-${LUA_VER}.so\" \
+# 	INSTALL_TOP=${STAGEDIR}${PREFIX} \
+# 	INSTALL_INC=${STAGEDIR}${PREFIX}/include/lua51 \
+# 	INSTALL_EXEC=${INSTALL_PROGRAM} \
+# "
+
+PKG_MAKE_BUILD_FLAGS=""
+
+LUA_VER=${PKG_VERSION}
+
+PKG_MAKE_BUILD_FLAGS='freebsd'
+
+PKG_MAKE_BUILD_FLAGS=" \
+	freebsd \
+	LUA_T=lua51 \
+	LUAC_T=luac51 \
+	LUA_A=liblua-5.1.5.a \
+	LUA_SO=liblua-5.1.5.so \
+	LUA_SONAME=liblua-5.1.5.so \
+	TO_BIN=\"lua51 luac51\" \
+	TO_LIB=\"liblua-5.1.5.a liblua-5.1.5.so\" \
+	AR=${X_PKG_AR} \
+	RANLIB=${X_PKG_RANLIB} \
+"
+
+PKG_MAKE_BUILD_FLAGS=" \
+	freebsd \
+	CFLAGS=-fPIC \
+	LUA_SONAME=liblua.so \
+	AR=${X_PKG_AR} \
+	RANLIB=${X_PKG_RANLIB} \
+"
+
+
+PKG_PRE_BUILD_PATCHLIST=" \
+	patch-Makefile \
+	patch-src__liolib.c \
+	patch-src__lmatthlib.c \
+	patch-src__lua.c \
+	patch-src__Makefile5 \
+"
+PKG_POSTCONFIGURE_SCRIPT=""
+
+ 
