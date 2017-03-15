@@ -1,0 +1,11 @@
+--- auto/cc/clang.orig	2017-03-04 16:31:46.073456000 +0700
++++ auto/cc/clang	2017-03-04 16:32:13.881426000 +0700
+@@ -82,7 +82,7 @@
+ # warnings
+ 
+ CFLAGS="$CFLAGS $NGX_CLANG_OPT -Wall -Wextra -Wpointer-arith"
+-CFLAGS="$CFLAGS -Wconditional-uninitialized"
++CFLAGS="$CFLAGS "
+ #CFLAGS="$CFLAGS -Wmissing-prototypes"
+ 
+ # we have a lot of unused function arguments
