@@ -94,6 +94,7 @@ port_clean()
 port_unpack()
 {
 	local X_PKGFILE="`basename ${PKGDISTFILE}`"
+	echo
 	echo "Unpacking..."
 	port_checksum
 	if [ $? != 0 ]; then
@@ -101,8 +102,18 @@ port_unpack()
 		return 1
 	fi
 
-	mkdir -p "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/work/"
-	( cd "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/work/" && tar zxvf ${X_PACKAGE_DISTFILE_DIR}/${X_PKGFILE} )
+	# mkdir -p "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/work/"
+	# ( cd "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/work/" && tar zxvf ${X_PACKAGE_DISTFILE_DIR}/${X_PKGFILE} )
+
+	local port="${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}"
+	local builder="${X_PORTBUILD_DIR}/pkgs/${X_PORTBUILD_PORT}"
+	mkdir -p "${port}/work"
+	(
+		[ -w "${builder}" -a ! -e "${builder}/.port" ] && \
+			ln -shf "${port}" "${builder}/.port"
+		cd "${port}/work" && tar -xvf ${X_PACKAGE_DISTFILE_DIR}/${X_PKGFILE}
+	)
+
 }
 
 port_patch()
@@ -117,6 +128,7 @@ port_patch()
 
 port_configure()
 {
+	echo
 	if [ "x${USE_CONFIGURE}" != "xYES" ]; then
 		echo "Skipping configure; not needed"
 		return
@@ -125,6 +137,21 @@ port_configure()
 
 	cd "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/work/${PKGWORKSUBDIR}"
 
+	# making help, using set -C to not clobber
+	# running under subshell to preserve current set
+	(
+		set -C
+		./configure --help >> help
+	)
+
+	# # should then we make a symlink in port builder directory ?
+	# test -r help && \
+	# 	ln -sfh "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/work/${PKGWORKSUBDIR}/help" \
+	# 		"${X_PORTBUILD_DIR}/pkgs/${X_PORTBUILD_PORT}"
+	#
+	# just copy it, extracted port might already have useful help text
+	test -e help && cp -v help "${X_PORTBUILD_DIR}/pkgs/${X_PORTBUILD_PORT}"
+	
 	# Setup the build environment
 	env \
 	    CC="${X_PKG_CC}" \
@@ -153,6 +180,12 @@ port_configure()
 
 port_build()
 {
+	if istrue ${SKIP_BUILD}; then
+		echo "Skip building package ${PKGNAME} ${PKGVERSION}"
+		return
+	fi
+
+	echo
 	echo "Building ${CONFIGURE_HOSTFLAGS}"
 
 	cd "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/work/${PKGWORKSUBDIR}"
@@ -188,6 +221,12 @@ port_build()
 
 port_staging()
 {
+	if istrue ${SKIP_BUILD}; then
+		echo "Skip staging package ${PKGNAME} ${PKGVERSION}"
+		return
+	fi
+
+	echo
 	echo "Staging install.."
 
 	# For now, this assumes DESTDIR is obeyed.
@@ -222,6 +261,12 @@ port_staging()
 
 port_files()
 {
+	if istrue ${SKIP_BUILD}; then
+		echo "Skip local copy package ${PKGNAME} ${PKGVERSION}"
+		return
+	fi
+
+	echo
 	echo "Adding local files.."
 	# If anything is in files/, then we copy it verbatim over into
 	# the staging directory; so then the package step can bring them
@@ -246,9 +291,46 @@ port_files()
 
 port_package()
 {
+	if istrue ${SKIP_BUILD}; then
+		echo "Skip packaging package ${PKGNAME} ${PKGVERSION}"
+		return
+	fi
+
+	echo
 	echo "Creating package!"
 	mkdir -p "${X_PACKAGE_PKGDIR}"
 	cd "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/staging/"
+
+	local lib=usr/local/lib
+
+	if isfalse "${X_PANCAKE_DONTSTRIP}"; then
+
+	    # strip dynamic libraries (safe)
+	    echo - stripping dynamic libraries..
+	    istrue "${X_STRIPLIB_SO:-YES}" && \
+		${X_PKG_STRIP} $lib/*.so > /dev/null 2>&1
+
+	    # strip static libraries (safe)
+	    echo - stripping static libraries..
+	    istrue "${X_STRIPLIB_A:-YES}" && \
+		${X_PKG_STRIP} --strip-unneeded $lib/*.a > /dev/null 2>&1;
+
+	    # strip binaries (dirty)
+	    echo - stripping binaries..
+	    istrue "${X_STRIPBIN:-YES}" && \
+		${X_PKG_STRIP} usr/local/bin/* usr/local/sbin/* > /dev/null 2>&1
+	fi
+
+	# create pkg-contents if it's not exist yet
+	local pkg_contents="${X_PORTBUILD_DIR}/pkgs/${X_PORTBUILD_PORT}/pkg-contents" 
+	if [ ! -f "$pkg_contents" ]; then
+		local random="`get_random_md5`"
+		port_get_pkg_contents . > "$pkg_contents.$random" 
+		[ -s "$pkg_contents.$random" ]  \
+			&& mv -fv "$pkg_contents.$random" "$pkg_contents" \
+			|| rm -fv "$pkg_contents.$random"
+	fi
+ 	
 	tar zcpvf "${X_PACKAGE_PKGDIR}/${X_PORTBUILD_PORT}.tar.gz" "@${X_PORTBUILD_DIR}/pkgs/${X_PORTBUILD_PORT}/pkg-contents"
 }
 
