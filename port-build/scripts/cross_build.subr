@@ -194,6 +194,11 @@ istrue()
 
 isfalse() { ! istrue $@; }
 
+get_random_md5()
+{
+	dd if=/dev/random count=1 2>/dev/null | md5 -q
+}
+
 get_cross_compile()
 {
 	local arch="$1"
@@ -235,3 +240,26 @@ port_exec_scripts()
 	done
 	# read -p "PAUSED-3.." x
 }
+
+port_get_pkg_contents()
+{
+	[ -n "$1" -a -d "$1" ] || return 1
+
+	local lastdir=${PWD}
+	cd "$1"
+
+	local id=0;	# [ug]id
+
+	# noneed fakeroot \	
+	mtree -R nlink,time,flags -cp . | \
+	mtree -C | \
+	sed \
+		-e 1d \
+		-e "s/^\.\///" \
+		-e "/id=[0-9]\{1,\} /s//id=$id /g" \
+		-e "/^\([^ ]*\)\( type=file .*\)$/s//\1\2 content=\1/"
+
+	test "${PWD}" = "${lastdir}" || cd "${lastdir}"
+}
+
+
