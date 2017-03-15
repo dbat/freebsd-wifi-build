@@ -1,0 +1,24 @@
+--- Makefile.orig	2012-02-10 16:50:23.000000000 +0700
++++ Makefile	2017-03-06 05:08:44.005615000 +0700
+@@ -10,5 +10,5 @@
+ # Where to install. The installation starts in the src and doc directories,
+ # so take care if INSTALL_TOP is not an absolute path.
+-INSTALL_TOP= /usr/local
++INSTALL_TOP?= $(DESTDIR)/usr/local
+ INSTALL_BIN= $(INSTALL_TOP)/bin
+ INSTALL_INC= $(INSTALL_TOP)/include
+@@ -23,5 +23,5 @@
+ # How to install. If your install program does not support "-p", then you
+ # may have to run ranlib on the installed liblua.a (do "make ranlib").
+-INSTALL= install -p
++INSTALL?= install  -p
+ INSTALL_EXEC= $(INSTALL) -m 0755
+ INSTALL_DATA= $(INSTALL) -m 0644
+@@ -44,5 +44,5 @@
+-TO_BIN= lua luac
++TO_BIN?= lua luac
+ TO_INC= lua.h luaconf.h lualib.h lauxlib.h ../etc/lua.hpp
+-TO_LIB= liblua.a
++TO_LIB?= liblua.a liblua.so
+-TO_MAN= lua.1 luac.1
++TO_MAN?= lua.1 luac.1
