@@ -1,0 +1,13 @@
+PKGNAME=ngx_module_set
+PKGVERSION=0.31
+PKGREVISION=1
+PKGDISTFILE=https://github.com/openresty/set-misc-nginx-module/archive/set-misc-nginx-module-0.31.tar.gz
+PKGDISTFILE_SUM_SHA256=97946a68937b50ab8637e1a90a13198fe376d801dc3e7447052e43c28e9ee7de
+PKGWORKSUBDIR=set-misc-nginx-module-0.31
+USE_CONFIGURE=NO
+SKIP_BUILD=YES
+PKG_PRE_BUILD_PATCHLIST=""
+PKG_LICENCE="BSD"
+PKG_MAKE_BUILD_FLAGS=""
+
+PKG_PRE_BUILD_POSTPATCH=ngx_makelink
