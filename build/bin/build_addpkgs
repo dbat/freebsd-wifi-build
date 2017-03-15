@@ -33,22 +33,42 @@ X_PORTBUILD_DIR=${SCRIPT_DIR}/../../port-build/
 # We need to figure out how to populate a metadata file with
 # the right contents.
 
+X_PACKAGELIST_BUILT=
+
 for i in ${X_PACKAGELIST}; do
+	if [ -d  "${X_PACKAGE_BUILDROOT_DIR}/${i}/staging" ]; then
+		X_PACKAGELIST_BUILT="${X_PACKAGELIST_BUILT} ${i}"
+	else
+		echo "*** Package $i is not built"
+	fi
+done
+
+for i in ${X_PACKAGELIST_BUILT}; do
 	echo "*** Adding package $i to rootfs"
 	cd ${X_STAGING_FSROOT}
-	tar zxpvf ${X_PACKAGE_PKGDIR}/${i}.tar.gz
 
-	# Yes, we need to figure out the actual staging root for this
-	# stuff.
-	tar -cf ${X_STAGING_FSROOT}/../${X_PACKAGE_SUBDIR}-${i}.mtree --format=mtree --options='!all,type,uname,gname,uid,gid,mode,size,link' @${X_PACKAGE_PKGDIR}/${i}.tar.gz || exit 1
+	if [ ! -r ${X_PACKAGE_PKGDIR}/${i}.tar.gz ]; then
+		echo "	ERROR. Can not found package: $i"
+	else 
+	test "`stat -f%z "${X_PACKAGE_PKGDIR}/${i}.tar.gz"`" -lt 64  && \
+		echo "	WARNING. Probably empty or damaged package: $i"
+	(
+	tar -xpvf ${X_PACKAGE_PKGDIR}/${i}.tar.gz
 
+	# Yes, we need to figure out the actual staging root for this stuff.
+	tar -cf ${X_STAGING_FSROOT}/../${X_PACKAGE_SUBDIR}-${i}.mtree \
+		--format=mtree --options='!all,type,uname,gname,uid,gid,mode,size,link' \
+		@${X_PACKAGE_PKGDIR}/${i}.tar.gz || exit 1
+	)
+	
 	echo "*** Done"
 done
 
 # Now, populate a complete mtree file from all of them, so we can
 # feed it to the big filter for the 'fsimage' target.
 rm -f ${X_STAGING_FSROOT}/../${X_PACKAGE_SUBDIR}-pkgs.mtree
-for i in ${X_PACKAGELIST}; do
-	cat ${X_STAGING_FSROOT}/../${X_PACKAGE_SUBDIR}-${i}.mtree >> ${X_STAGING_FSROOT}/../${X_PACKAGE_SUBDIR}-pkgs.mtree
+for i in ${X_PACKAGELIST_BUILT}; do
+	cat ${X_STAGING_FSROOT}/../${X_PACKAGE_SUBDIR}-${i}.mtree \
+		>> ${X_STAGING_FSROOT}/../${X_PACKAGE_SUBDIR}-pkgs.mtree
 done
 
