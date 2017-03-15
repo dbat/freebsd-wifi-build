@@ -61,7 +61,14 @@ else
 	X_BUILD_LIST=$*
 fi
 
-echo "Build list: ${X_BUILD_LIST}"
+echo
+echo Build list: 
+# for a in ${X_BUILD_LIST}; do echo "$a"; done
+echo "${X_BUILD_LIST}"
+echo
+# last chance to do something we always forget until is too late
+echo "Press [ENTER] to continue.. ([CTRL-BREAK] to cancel)"
+read a
 
 for BUILD_TARGET in ${X_BUILD_LIST}; do
 	echo "*** Target		: ${BUILD_TARGET}"
