@@ -85,7 +85,7 @@ PKG_LICENCE="BSD"
 # 	HOME=~ \
 # "
 
-PKG_PRE_BUILD_PATCHLIST="\
+PKG_POST_CONFIGURE_SCRIPTS="\
 	patch-conf-nginx.conf2 \
 	patch_auto_cc \
 	patch_auto_make2 \
@@ -93,6 +93,6 @@ PKG_PRE_BUILD_PATCHLIST="\
 
 X_PKG_LDFLAGS="--sysroot=${X_ROOTDIR}"
 
-PKG_POST_CONFIGURE_SCRIPT=" \
+PKG_POST_CONFIGURE_SCRIPTS=" \
 	patch-objs_Makefile \
 "
