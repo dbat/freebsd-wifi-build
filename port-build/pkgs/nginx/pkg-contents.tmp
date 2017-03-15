@@ -1,0 +1,30 @@
+usr type=dir uid=0 gid=0 mode=0755
+usr/local type=dir uid=0 gid=0 mode=0755
+usr/local/etc type=dir uid=0 gid=0 mode=0755
+usr/local/etc/fastcgi.conf type=file uid=0 gid=0 mode=0644 content=usr/local/etc/fastcgi.conf
+usr/local/etc/fastcgi.conf.default type=file uid=0 gid=0 mode=0644 content=usr/local/etc/fastcgi.conf.default
+usr/local/etc/fastcgi_params type=file uid=0 gid=0 mode=0644 content=usr/local/etc/fastcgi_params
+usr/local/etc/fastcgi_params.default type=file uid=0 gid=0 mode=0644 content=usr/local/etc/fastcgi_params.default
+usr/local/etc/koi-utf type=file uid=0 gid=0 mode=0644 content=usr/local/etc/koi-utf
+usr/local/etc/koi-win type=file uid=0 gid=0 mode=0644 content=usr/local/etc/koi-win
+usr/local/etc/mime.types type=file uid=0 gid=0 mode=0644 content=usr/local/etc/mime.types
+usr/local/etc/mime.types.default type=file uid=0 gid=0 mode=0644 content=usr/local/etc/mime.types.default
+usr/local/etc/nginx.conf type=file uid=0 gid=0 mode=0644 content=usr/local/etc/nginx.conf
+usr/local/etc/nginx.conf.default type=file uid=0 gid=0 mode=0644 content=usr/local/etc/nginx.conf.default
+usr/local/etc/scgi_params type=file uid=0 gid=0 mode=0644 content=usr/local/etc/scgi_params
+usr/local/etc/scgi_params.default type=file uid=0 gid=0 mode=0644 content=usr/local/etc/scgi_params.default
+usr/local/etc/uwsgi_params type=file uid=0 gid=0 mode=0644 content=usr/local/etc/uwsgi_params
+usr/local/etc/uwsgi_params.default type=file uid=0 gid=0 mode=0644 content=usr/local/etc/uwsgi_params.default
+usr/local/etc/win-utf type=file uid=0 gid=0 mode=0644 content=usr/local/etc/win-utf
+usr/local/etc/html type=dir uid=0 gid=0 mode=0755
+usr/local/etc/html/50x.html type=file uid=0 gid=0 mode=0644 content=usr/local/etc/html/50x.html
+usr/local/etc/html/index.html type=file uid=0 gid=0 mode=0644 content=usr/local/etc/html/index.html
+usr/local/sbin type=dir uid=0 gid=0 mode=0755
+usr/local/sbin/nginx type=file uid=0 gid=0 mode=0755 content=usr/local/sbin/nginx
+usr/local/www type=dir uid=0 gid=0 mode=0755
+usr/local/www/nginx type=dir uid=0 gid=0 mode=0755
+usr/local/www/nginx/html type=dir uid=0 gid=0 mode=0755
+var type=dir uid=0 gid=0 mode=0755
+var/log type=dir uid=0 gid=0 mode=0755
+var/log/nginx type=dir uid=0 gid=0 mode=0755
+var/run type=dir uid=0 gid=0 mode=0755

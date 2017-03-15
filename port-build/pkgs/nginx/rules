@@ -1,0 +1,98 @@
+PKGNAME=nginx
+PKGVERSION=1.10.3
+PKGREVISION=1
+PKGDISTFILE=https://nginx.org/download/nginx-1.10.3.tar.gz
+PKGDISTFILE_SUM_SHA256=75020f1364cac459cb733c4e1caed2d00376e40ea05588fb8793076a4c69dd90
+PKGWORKSUBDIR=nginx-1.10.3
+USE_CONFIGURE=YES
+PKG_MAKE_CONFIGURE_FLAGS=""
+PKG_MAKE_BUILD_FLAGS=""
+PKG_INSTALL_BUILD_FLAGS=""
+PKG_MAKE_CONFIGURE_FLAGS="PCRE_CFLAGS=-I${X_PACKAGE_BUILDROOT_DIR}/pcre/staging/usr/local/include PCRE_LIBS=${X_PACKAGE_BUILDROOT_DIR}/pcre/staging/usr/local/lib/libpcre.a"
+PKG_MAKE_CONFIGURE_FLAGS="\
+	--with-cc=/usr/local/bin/${X_PKG_CROSS_COMPILE}-gcc \
+	--with-cpp=/usr/local/bin/${X_PKG_CROSS_COMPILE}-g++ \
+"
+
+PKG_MAKE_CONFIGURE_FLAGS="\
+	--with-cc-opt=-I${X_ROOTDIR}/usr/include \
+	--with-ld-opt=-L${X_PACKAGE_BUILDROOT_DIR}/pcre/staging/usr/local/lib \
+	--with-pcre=${X_PACKAGE_BUILDROOT_DIR}/pcre/staging/usr/local/lib \
+"
+
+# shild be sync's with nginx.conf's patch
+NGINX_VARDIR=/var
+NGINX_LOGDIR=${NGINX_VARDIR}/log/nginx
+NGINX_RUNDIR=${NGINX_VARDIR}/run
+NGINX_TMPDIR=${NGINX_VARDIR}/tmp/nginx
+NGINX_ACCESSLOG=${NGINX_LOGDIR}/access.log
+NGINX_ERRORLOG=${NGINX_LOGDIR}/error.log
+HTTP_PORT=80
+WWWOWN=${WWWOWN:-80}
+WWWGRP=${WWWGRP:-80}
+PREFIX=${PREFIX:-/usr/local}
+ETCDIR=${ETCDIR:-$PREFIX/etc}
+
+PKG_MAKE_CONFIGURE_FLAGS="\
+	--with-ld-opt=-L${X_ROOTDIR}/usr/lib/sysroot \
+	--with-ld-opt=-L/usr/local/lib \
+	--with-cc-opt=-I${X_ROOTDIR}/usr/include \
+\
+	--prefix=${ETCDIR} \
+	--conf-path=${ETCDIR}/nginx.conf \
+	--sbin-path=${PREFIX}/sbin/nginx \
+	--pid-path=${NGINX_RUNDIR}/nginx.pid \
+	--lock-path=${NGINX_RUNDIR}/nginx.lck \
+	--error-log-path=${NGINX_ERRORLOG} \
+	--user=${WWWOWN} --group=${WWWGRP} \
+\
+	--http-client-body-temp-path=${NGINX_TMPDIR}/client_body_temp \
+	--http-fastcgi-temp-path=${NGINX_TMPDIR}/fastcgi_temp \
+	--http-proxy-temp-path=${NGINX_TMPDIR}/proxy_temp \
+	--http-scgi-temp-path=${NGINX_TMPDIR}/scgi_temp \
+	--http-uwsgi-temp-path=${NGINX_TMPDIR}/uwsgi_temp \
+	--http-log-path=${NGINX_ACCESSLOG} \
+\
+	--with-http_addition_module \
+	--with-http_dav_module \
+	--with-http_sub_module \
+\
+	--add-module=../../ngx_ndk/work/ngx_devel_kit \
+	--add-module=../../ngx_lua/work/lua-nginx-module \
+	--add-module=../../ngx_set/work/set-misc-nginx-module \
+"
+
+# maybe with-https is too much, too big image
+# \
+# 	--with-http_ssl_module \
+#
+# mod_lua searching for plain name liblua.so (without versioning)
+# you have to make symlink:
+# ln -s liblua.5.1.so /usr/local/lib/liblua.so
+
+# nginx doesn't like them, we will fix them after configure
+X_PKG_CONFIGURE_HOSTFLAGS=""
+X_PKG_CC=""
+X_PKG_CXX=""
+# PKG_BUILD_DEPS="ngx_ndk ngx_lua ngx_set"
+PKG_RUN_DEPS="pcre lua51"
+PKG_LICENCE="BSD"
+
+# PKG_MAKE_BUILD_FLAGS="\
+# 	CC=\
+# 	LDFLAGS=--sysroot=${X_PACKAGE_BUILDROOT_DIR} \
+# 	/usr/local/bin/${X_PKG_CROSS_COMPILE}-gcc \
+# 	HOME=~ \
+# "
+
+PKG_PRE_BUILD_PATCHLIST="\
+	patch-conf-nginx.conf2 \
+	patch_auto_cc \
+	patch_auto_make2 \
+"
+
+X_PKG_LDFLAGS="--sysroot=${X_ROOTDIR}"
+
+PKG_POSTCONFIGURE_SCRIPT=" \
+	patch-objs_Makefile \
+"
