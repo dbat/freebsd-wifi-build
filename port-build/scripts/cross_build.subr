@@ -139,6 +139,16 @@ port_configure()
 	    CPPFLAGS="${X_PKG_CPPFLAGS}" \
 	    LDFLAGS="${X_PKG_LDFLAGS}" \
 	    ./configure ${X_PKG_CONFIGURE_HOSTFLAGS} ${PKG_MAKE_CONFIGURE_FLAGS}
+
+	# after configure patch/exec, but before started to build
+	# the script to be executed *must* be a script with .sh extension
+	# and can be listed without the trailing .sh
+	[ -z  "${PKG_POST_CONFIGURE_SCRIPTS}" ] && return
+	echo
+	echo "Execute post configure shell script.."
+	echo "PKG_POST_CONFIGURE_SCRIPTS = ${PKG_POST_CONFIGURE_SCRIPTS}"
+	# read -p "PAUSED-1.." x
+	port_exec_scripts ${PKG_POST_CONFIGURE_SCRIPTS} 
 }
 
 port_build()
@@ -164,6 +174,16 @@ port_build()
 	    CPPFLAGS="${X_PKG_CPPFLAGS}" \
 	    LDFLAGS="${X_PKG_LDFLAGS}" \
 	gmake ${PKG_MAKE_BUILD_FLAGS}
+
+	# after build patch/exec, but before staging
+	# the script to be executed *must* be a script with .sh extension
+	# and can be listed without the trailing .sh
+	[ -z  "${PKG_POST_BUILD_SCRIPTS}" ] && return
+	echo
+	echo "Execute post build shell script.."
+	echo "PKG_POST_BUILD_SCRIPTS = ${PKG_POST_BUILD_SCRIPTS}"
+	# read -p "PAUSED-1.." x
+	port_exec_scripts ${PKG_POST_BUILD_SCRIPTS} 
 }
 
 port_staging()
@@ -188,6 +208,16 @@ port_staging()
 	    CPPFLAGS="${X_PKG_CPPFLAGS}" \
 	    LDFLAGS="${X_PKG_LDFLAGS}" \
 	gmake install ${PKG_INSTALL_BUILD_FLAGS} DESTDIR="${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/staging/"
+
+	# post installation fixup
+	# the script to be executed *must* be a script with .sh extension
+	# and can be listed without the trailing .sh
+	[ -z  "${PKG_POST_STAGING_SCRIPTS}" ] && return
+	echo
+	echo "Execute post staging shell script.."
+	echo "PKG_POST_STAGING_SCRIPTS = ${PKG_POST_STAGING_SCRIPTS}"
+	# read -p "PAUSED-1.." x
+	port_exec_scripts ${PKG_POST_STAGING_SCRIPTS} 
 }
 
 port_files()
@@ -202,6 +232,16 @@ port_files()
 	fi
 	cp -vpr "${X_PORTBUILD_DIR}/pkgs/${X_PORTBUILD_PORT}/files/" "${X_PACKAGE_BUILDROOT_DIR}/${X_PORTBUILD_PORT}/staging/"
 	echo ".. done."
+
+	# post installation fixup
+	# the script to be executed *must* be a script with .sh extension
+	# and can be listed without the trailing .sh
+	[ -z  "${PKG_POST_INSTALL_SCRIPTS}" ] && return
+	echo
+	echo "Execute post install shell script.."
+	echo "PKG_POST_INSTALL_SCRIPTS = ${PKG_POST_INSTALL_SCRIPTS}"
+	# read -p "PAUSED-1.." x
+	port_exec_scripts ${PKG_POST_INSTALL_SCRIPTS} 
 }
 
 port_package()
@@ -254,6 +294,7 @@ port_exec_scripts()
 {
 	for i; do
 	# read -p "PAUSED-2.. $i" x
+	# run .sh scripts
 	# executed under subshell so any failures will not bring the function down
 	# the script expected to set their return status 0:success 1:fail/error
 	# the script will run in extracted port dir PKGWORKSUBDIR as stated in file: "rules"
