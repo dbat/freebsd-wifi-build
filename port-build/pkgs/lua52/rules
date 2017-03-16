@@ -68,6 +68,6 @@ PKG_PRE_BUILD_PATCHLIST=" \
 	patch-src__lua.c \
 	patch-src__Makefile5 \
 "
-PKG_POSTCONFIGURE_SCRIPT=""
+PKG_POST_CONFIGURE_SCRIPT=""
 
  
