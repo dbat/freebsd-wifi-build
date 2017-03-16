@@ -33,11 +33,28 @@ WWWGRP=${WWWGRP:-80}
 PREFIX=${PREFIX:-/usr/local}
 ETCDIR=${ETCDIR:-$PREFIX/etc}
 
+# 	--with-ld-opt=-L${X_ROOTDIR}/usr/lib/sysroot \
+# 	--with-ld-opt=-L/usr/local/lib \
+# 	--with-cc-opt=-I${X_ROOTDIR}/usr/include \
+# 	--with-cc-opt=-I${X_PACKAGE_BUILDROOT_DIR}/lua51/staging/usr/local/include \
+# 	--with-cc-opt=-I/usr/local/include/lua51 \
+
+# # ***************************************************************
+# # mod_lua searching for plain name liblua.so (without versioning)
+# # so you (as superuser) have to make symlink:
+# # ln -s /usr/local/lib/liblua.5.1.so /usr/local/lib/liblua.so
+# # ***************************************************************
+# # and in this hackish version it should be the recognizable
+# # format by nginx (i386/amd arch), not mips library
+# # maybe it'd better to patch the makefile to always found liblua
+# # ***************************************************************
+
+# In it's weirdness nginx search in /usr/local /usr/local/*/lua51 etc
+# but not in /usr/local/lib, so we have to point them into it 
+
 PKG_MAKE_CONFIGURE_FLAGS="\
-	--with-ld-opt=-L${X_ROOTDIR}/usr/lib/sysroot \
-	--with-ld-opt=-L/usr/local/lib \
-	--with-cc-opt=-I${X_ROOTDIR}/usr/include \
-\
+ 	--with-ld-opt=-L/usr/local/lib \
+	\
 	--prefix=${ETCDIR} \
 	--conf-path=${ETCDIR}/nginx.conf \
 	--sbin-path=${PREFIX}/sbin/nginx \
@@ -45,30 +62,29 @@ PKG_MAKE_CONFIGURE_FLAGS="\
 	--lock-path=${NGINX_RUNDIR}/nginx.lck \
 	--error-log-path=${NGINX_ERRORLOG} \
 	--user=${WWWOWN} --group=${WWWGRP} \
-\
+	\
 	--http-client-body-temp-path=${NGINX_TMPDIR}/client_body_temp \
 	--http-fastcgi-temp-path=${NGINX_TMPDIR}/fastcgi_temp \
 	--http-proxy-temp-path=${NGINX_TMPDIR}/proxy_temp \
 	--http-scgi-temp-path=${NGINX_TMPDIR}/scgi_temp \
 	--http-uwsgi-temp-path=${NGINX_TMPDIR}/uwsgi_temp \
 	--http-log-path=${NGINX_ACCESSLOG} \
-\
+	\
 	--with-http_addition_module \
 	--with-http_dav_module \
 	--with-http_sub_module \
-\
+	\
+	\
 	--add-module=../../ngx_ndk/work/ngx_devel_kit \
 	--add-module=../../ngx_lua/work/lua-nginx-module \
 	--add-module=../../ngx_set/work/set-misc-nginx-module \
 "
 
+#
 # maybe with-https is too much, too big image
-# \
+# 	\
 # 	--with-http_ssl_module \
 #
-# mod_lua searching for plain name liblua.so (without versioning)
-# you have to make symlink:
-# ln -s liblua.5.1.so /usr/local/lib/liblua.so
 
 # nginx doesn't like them, we will fix them after configure
 X_PKG_CONFIGURE_HOSTFLAGS=""
@@ -78,6 +94,9 @@ X_PKG_CXX=""
 PKG_RUN_DEPS="pcre lua51"
 PKG_LICENCE="BSD"
 
+#X_PKG_CFLAGS="-I${X_PACKAGE_BUILDROOT_DIR}/lua51/staging/usr/local/include"
+
+
 # PKG_MAKE_BUILD_FLAGS="\
 # 	CC=\
 # 	LDFLAGS=--sysroot=${X_PACKAGE_BUILDROOT_DIR} \
@@ -85,14 +104,14 @@ PKG_LICENCE="BSD"
 # 	HOME=~ \
 # "
 
-PKG_POST_CONFIGURE_SCRIPTS="\
+PKG_PRE_BUILD_PATCHLIST="\
 	patch-conf-nginx.conf2 \
 	patch_auto_cc \
-	patch_auto_make2 \
 "
+#	patch_auto_make2 \
 
 X_PKG_LDFLAGS="--sysroot=${X_ROOTDIR}"
 
 PKG_POST_CONFIGURE_SCRIPTS=" \
-	patch-objs_Makefile \
+	cmd-objs_Makefile \
 "
