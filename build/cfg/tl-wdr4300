@@ -1,0 +1,67 @@
+# Base configuration
+X_BUILD_BASE_CFG="mips_ap"
+
+KERNCONF=TL-WDR4300
+
+# The configuration load/save script needs to know the
+# configuration partition name and location.
+BIN_CFG_PARTITION="/dev/map/cfg"
+BIN_CFG_SIZE="65536"
+
+RECOVERY_PIN="16"
+RECOVERY_PIN_ACTIVE="0"
+
+# Modules need to be included
+MFSROOT_INC_MODULES="YES"
+MFSROOT_INC_MODULE_LIST="if_vlan if_gif if_gre if_tap if_tun"
+MFSROOT_INC_MODULE_LIST="${MFSROOT_INC_MODULE_LIST} if_otus otusfw_init otusfw_main"
+MFSROOT_INC_MODULE_LIST="${MFSROOT_INC_MODULE_LIST} if_urtwn urtwn-rtl8188eufw urtwn-rtl8192cfwT urtwn-rtl8192cfwU"
+MFSROOT_INC_MODULE_LIST="${MFSROOT_INC_MODULE_LIST} libalias ipfw ipfw_nat ipfw_nptv6 dummynet netmap"
+
+# Make a ulzma image
+OPTS_LD=""
+case "`uname -r`" in
+  [789]*|10*)
+	X_FSIMAGE_CMD="mkulzma"
+	;;
+  *)
+	X_FSIMAGE_CMD="mkuzip"
+	OPTS_LD="-L -d "
+	;;
+esac
+
+X_FSIMAGE_ARGS="${OPTS_LD}-s 65536 -v";
+X_FSIMAGE_SUFFIX=".ulzma"
+
+# Use LZMA to compress the kernel
+TPLINK_COMPRESSION_LZMA=YES
+TPLINK_CONFIG_STYLE=NEW
+
+TPLINK_ROOTFS_START="0x00180000"
+TPLINK_KERN_LOADADDR="0x80050000"
+TPLINK_KERN_STARTADDR="0x80050100"
+TPLINK_IMG_NAME="FreeBSD"
+TPLINK_IMG_VERSION="FreeBSD-HEAD"
+# New-style board config
+TPLINK_HARDWARE_ID=0x43000001
+TPLINK_HARDWARE_VER=1
+TPLINK_HARDWARE_FLASHID=8M
+TPLINK_FIRMWARE_RESERV=0x40000
+
+# Building the firmware image
+X_BUILD_BUILD_IMG_DEFAULTS="fetchpkgs mfsroot makepkgs addpkgs fsimage tplink"
+
+# Configuration file overrides
+#X_CFG_DEFAULT_ETHER="arge1"
+X_CFG_DEFAULT_HOSTNAME="freebsd-tl-wdr4300"
+X_PACKAGELIST="glib"
+X_PACKAGELIST="libsigsegv"
+X_PACKAGELIST="mc"
+X_PACKAGELIST="libsig"
+X_PACKAGELIST="gettextr"
+X_PACKAGELIST="ngx3p"
+X_PACKAGELIST="dropbear dnsmasq lzo2 openvpn indexinfo pcre lua51 nginx/ngx_ndk nginx/ngx_lua nginx/ngx_set nginx"
+X_PACKAGELIST="lua51"
+X_PACKAGELIST="bash2"
+X_PACKAGELIST="pcre lua51 nginx/ngx_ndk nginx/ngx_set nginx/ngx_lua nginx"
+X_PACKAGELIST="dropbear dnsmasq lzo2 openvpn pcre lua51 lighttpd"
