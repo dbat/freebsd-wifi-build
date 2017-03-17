@@ -6,15 +6,7 @@ PKGDISTFILE_SUM_SHA256=2640fc56a795f29d28ef15e13c34a47e223960b0240e8cb0a82d9b073
 PKGWORKSUBDIR=lua-5.1.5
 PKG_LICENCE="BSD"
 
-PKG_MAKE_CONFIGURE_FLAGS="\
-        LIBEDIT_CFLAGS=-I${X_PACKAGE_BUILDROOT_DIR}/libedit/staging/usr/local/include \
-        LIBEDIT_LIBS=${X_PACKAGE_BUILDROOT_DIR}/libedit/staging/usr/local/lib/libedit.a\
-"
 PKG_MAKE_CONFIGURE_FLAGS=""
-
-# LDFLAGS+=       -lm -pthread
-# BUILD_WRKSRC=   ${WRKSRC}/src
-
 
 # MAKE_ARGS="\
 # 	MYCFLAGS=\"${CFLAGS} ${CPPFLAGS} -DLUA_USE_LINUX\" \
@@ -39,19 +31,6 @@ LUA_VER=${PKG_VERSION}
 
 PKG_MAKE_BUILD_FLAGS=" \
 	freebsd \
-	LUA_T=lua51 \
-	LUAC_T=luac51 \
-	LUA_A=liblua-5.1.5.a \
-	LUA_SO=liblua-5.1.5.so \
-	LUA_SONAME=liblua-5.1.5.so \
-	TO_BIN=\"lua51 luac51\" \
-	TO_LIB=\"liblua-5.1.5.a liblua-5.1.5.so\" \
-	AR=${X_PKG_AR} \
-	RANLIB=${X_PKG_RANLIB} \
-"
-
-PKG_MAKE_BUILD_FLAGS=" \
-	freebsd \
 	CFLAGS=-fPIC \
 	LUA_SONAME=liblua.so \
 	AR=${X_PKG_AR} \
@@ -62,4 +41,4 @@ PKG_PRE_BUILD_PATCHLIST="\
 	patch-Makefile \
 	patch-src-luaconf.h \
 	patch-src__Makefile3 \
-" 
+"
