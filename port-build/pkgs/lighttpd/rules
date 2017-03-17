@@ -12,43 +12,20 @@ PKGWORKSUBDIR=lighttpd-1.4.45
 
 USE_CONFIGURE=YES
 
-# PKG_MAKE_CONFIGURE_FLAGS="\
-# 	--with-ssl \
-# 	--with-lua \
-# 	--with-doc \
-# "
-# LZO_LIBS=${X_PACKAGE_BUILDROOT_DIR}/lzo2/staging/usr/local/lib/liblzo2.a\
-#
-
-# PKG_MAKE_CONFIGURE_FLAGS="\
-# 	--disable-static --enable-shared \
-# 	--prefix=${X_PACKAGE_BUILDROOT_DIR}/pcre/work/pcre-8.40/.lib \
-# "
-
-# just copy libpcre to SYSROOT/usr/local/lib
-# 
-# PKG_MAKE_CONFIGURE_FLAGS="\
-# 	--with-attr \
-# 	--with-openssl \
-#	--without-pcre \
-# 	--disable-ipv6 \
-# 	--disable-large-files \
-# "
-
 PKG_MAKE_CONFIGURE_FLAGS="\
 	--with-attr \
 	--with-lua \
 	LUA_LIBS=${X_PACKAGE_BUILDROOT_DIR}/lua51/staging/usr/local/lib/liblua.so \
 	LUA_CFLAGS=-I${X_PACKAGE_BUILDROOT_DIR}/lua51/staging/usr/local/include \
-	--without-pcre \
-	--without-pcre \
 	--with-openssl \
-	--disable-ipv6 \
-	--disable-lfs \
 	LOGROOT=/var/log/lighttpd \
 "
+
 #	--without-pcre \
-# --with-lua \
+# 	--disable-ipv6 \
+# 	--disable-lfs \
+#	--with-lua \
+
 # PKG_MAKE_BUILD_FLAGS=""
 
-PKG_PRE_BUILD_PATCHLIST="patch-src_fdevent__freebsd__kqueue.c" 
+PKG_PRE_BUILD_PATCHLIST="patch-src_fdevent__freebsd__kqueue.c"
