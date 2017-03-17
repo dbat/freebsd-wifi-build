@@ -47,4 +47,3 @@
  	@echo "INSTALL_INC= $(INSTALL_INC)"
  	@echo "INSTALL_LIB= $(INSTALL_LIB)"
  	@echo "INSTALL_MAN= $(INSTALL_MAN)"
-  
