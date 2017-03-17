@@ -26,7 +26,7 @@ X_BASEDIR=${SCRIPT_DIR%/*}
 # This step requires the packages exist in the staging root.
 
 # XXX for now, hard-code mips
-X_PORTBUILD_DIR=${SCRIPT_DIR%/*/*}port-build
+X_PORTBUILD_DIR=${SCRIPT_DIR%/*/*}/port-build
 
 for i in ${X_PACKAGELIST}; do
 	echo "*** Building $i"
