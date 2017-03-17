@@ -13,3 +13,5 @@ PKG_INSTALL_BUILD_FLAGS='MULTI=1'
 # happen.
 
 PKG_PRE_BUILD_PATCHLIST="patch-Makefile.in"
+
+PKG_POST_INSTALL_SCRIPTS=cmd-fixlinks
