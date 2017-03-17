@@ -22,3 +22,4 @@
 +TO_LIB?= liblua.a liblua.so
 -TO_MAN= lua.1 luac.1
 +TO_MAN?= lua.1 luac.1
+ 
