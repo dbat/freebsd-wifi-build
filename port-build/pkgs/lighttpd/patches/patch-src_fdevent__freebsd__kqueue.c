@@ -16,4 +16,4 @@
 +		EV_SET(&kev[n], fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
  		n++;
  	} else if (delevents & FDEVENT_OUT) {
- 		EV_SET(&kev[n], fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL); 
+ 		EV_SET(&kev[n], fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
